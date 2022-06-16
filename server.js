@@ -4,7 +4,12 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+
+//connect to database
 const db = mongoose.connect("mongodb://localhost/item-shop");
+//importing mongoose models
+const Product = require("./model/product");
+const WishList = require("./model/wishlist");
 
 //server understands static and json
 app.use(express.static("public"));
