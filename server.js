@@ -19,10 +19,21 @@ app.listen(3000, () => {
   console.log("Running on port 3000");
 });
 
-app.get("/products", (req, res) => {
-  res.json();
-});
+//Server accepts post request
+app.post("/product", (req, res) => {
+  //new mongoose object created from mongoose product model
+  const product = new Product();
+  product.title = req.body.title;
+  product.price = req.body.price;
 
-app.post("/products", (req, res) => {
-  const data = req.body;
+  //save model object to mongodb + callback
+  product.save((err, savedProduct) => {
+    if (err) {
+      //callback returns response error if error when saving
+      res.status(500).json({ error: "Could not save product" });
+    } else {
+      //else callback returns response saved mongoose object
+      res.status(200).json(savedProduct);
+    }
+  });
 });
