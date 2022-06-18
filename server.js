@@ -24,23 +24,25 @@ app.get("/product", (req, res) => {
   //Find all products + callback
   Product.find({}, (err, products) => {
     if (err) {
-      res.status(500).json({ error: "Error when loading products" });
+      res.status(500).json({ error: "Could not fetch product" });
     } else {
       res.json(products);
     }
   });
 });
 
-//Servr accepts get request - wishlist list
+//Servr accepts get request - wishlist list + populate products array
 app.get("/wishlist", (req, res) => {
   //Find all wishlists + callback
-  WishList.find({}, (err, wishLists) => {
-    if (err) {
-      res.status(500).json({ error: "Error when loading wishlist" });
-    } else {
-      res.json(wishLists);
-    }
-  });
+  WishList.find({})
+    .populate({ path: "products", model: "Product" })
+    .exec((err, wishList) => {
+      if (err) {
+        res.status(500).json({ error: "Could not fetch wishlist" });
+      } else {
+        res.json(wishList);
+      }
+    });
 });
 
 //Server accepts post request - product creation
