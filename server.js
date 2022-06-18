@@ -79,3 +79,27 @@ app.post("/wishlist", (req, res) => {
     }
   });
 });
+
+//Server accepts put request - productId,wishListId - add a product to wishlist
+app.put("/wishlist/product/add", (req, res) => {
+  //find product
+  Product.findOne({ _id: req.body.productId }, (err, product) => {
+    if (err) {
+      res.status(500).json({ error: "Could not find product" });
+    } else {
+      //update function of mongoose model
+      //(find wishlist with wishlistId,add prodcutId to product array,send response)
+      WishList.update(
+        { _id: req.body.wishListId },
+        { $addToSet: { products: product._id } },
+        (err, wishList) => {
+          if (err) {
+            res.status(500).json({ error: "Could not update wishList" });
+          } else {
+            res.json({ message: "Successfully added product to wishList" });
+          }
+        }
+      );
+    }
+  });
+});
