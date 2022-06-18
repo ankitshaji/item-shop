@@ -19,9 +19,33 @@ app.listen(3000, () => {
   console.log("Running on port 3000");
 });
 
-//Server accepts post request
+//Server accepts get request - product list
+app.get("/product", (req, res) => {
+  //Find all products + callback
+  Product.find({}, (err, products) => {
+    if (err) {
+      res.status(500).json({ error: "Error when loading products" });
+    } else {
+      res.json(products);
+    }
+  });
+});
+
+//Servr accepts get request - wishlist list
+app.get("/wishlist", (req, res) => {
+  //Find all wishlists + callback
+  WishList.find({}, (err, wishLists) => {
+    if (err) {
+      res.status(500).json({ error: "Error when loading wishlist" });
+    } else {
+      res.json(wishLists);
+    }
+  });
+});
+
+//Server accepts post request - product creation
 app.post("/product", (req, res) => {
-  //new mongoose object created from mongoose product model
+  //new mongoose object created from mongoose Product model
   const product = new Product();
   product.title = req.body.title;
   product.price = req.body.price;
@@ -33,7 +57,25 @@ app.post("/product", (req, res) => {
       res.status(500).json({ error: "Could not save product" });
     } else {
       //else callback returns response saved mongoose object
-      res.status(200).json(savedProduct);
+      res.json(savedProduct);
+    }
+  });
+});
+
+//Server accpets post requests - /wishlist creation
+app.post("/wishlist", (req, res) => {
+  //new mongoose object created from mongoose WishList model
+  const wishList = new WishList();
+  wishList.title = req.body.title;
+
+  //save model object to mongodb + callback
+  wishList.save((err, savedWishList) => {
+    if (err) {
+      //callback returns response error if error when saving
+      res.status(500).json({ error: "Could not save wishlist" });
+    } else {
+      //else callback returns response saved mongoose object
+      res.json(savedWishList);
     }
   });
 });
